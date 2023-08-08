@@ -1,0 +1,11 @@
+phonons
+&inputph
+  prefix          = 'graphene'
+  outdir          = './tmp'
+  tr2_ph          = 1.0D-18
+  verbosity       = 'high'
+  fildyn          = 'graphene.dyn'
+  fildvscf        = 'dvscf'
+  electron_phonon = 'epc'
+/
+  0.0  0.0  0.0

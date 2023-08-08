@@ -1,0 +1,11 @@
+phonons
+&inputph
+  prefix          = 'MoS2'
+  outdir          = './tmp'
+  tr2_ph          = 1.0D-18
+  verbosity       = 'high'
+  fildyn          = 'MoS2.dyn'
+  fildvscf        = 'dvscf'
+  electron_phonon = 'epc'
+/
+  0.0  0.0  0.0
