@@ -23,7 +23,7 @@ Also, consider adding the `QERaman/bin` to the environment variables `PATH`.
 - Teng Yang (Institute of Metal Research, Chinese Academy of Sciences, China)
 - Riichiro Saito (Tohoku University, Japan)
 
-We are open to contributions from anybody who wants to develop the QERaman. Contact us using the GitHub discussions page: https://github.com/nguyen-group/QERaman/discussions to discuss your ideas.
+We are open to contributions from anybody who wants to develop the QERaman. Don't hesitate to contact us using the GitHub discussions page: https://github.com/nguyen-group/QERaman/discussions to discuss your ideas.
 
 # License
 GNU General Public License (v3)
