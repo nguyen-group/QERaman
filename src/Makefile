@@ -27,7 +27,7 @@ all : ph_mat.x bands_mat.x raman.x
 ph_mat.x : phonon2.o $(PHOBJS) $(PWOBJS) $(LRMODS) $(QEMODS)
 	$(LD) $(LDFLAGS) -o $@ phonon2.o $(PHOBJS) \
 		 $(LRMODS) $(PWOBJS) $(QEMODS) $(QELIBS)
-	- ( cd ../bin ; ln -fs ../src/ph_mat.x . )
+	- ( mkdir ../bin; cd ../bin ; ln -fs ../src/ph_mat.x . )
 
 bands_mat.x : bands.o $(PPOBJS) $(MODULES)
 	$(LD) $(LDFLAGS) -o $@ bands.o $(PPOBJS) \
