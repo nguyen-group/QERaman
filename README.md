@@ -17,6 +17,10 @@ Step 2: Go to the source code in the QERaman directory to install the code:
 
 Also, consider adding the `QERaman/bin` to the environment variables `PATH`.
 
+# Documentation
+The documentation can be found on the GitHub wiki page: https://github.com/nguyen-group/QERaman/wiki.
+It shows the input variables description for `raman.x`, `bands_mat.x`, and `ph_mat.x`, and also the format of the output files.
+
 # Contributors
 - Nguyen Tuan Hung (Tohoku University, Japan)
 - Jianqi Huang (Institute of Metal Research, Chinese Academy of Sciences, China)
