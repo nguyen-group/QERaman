@@ -21,6 +21,19 @@ Also, consider adding the `QERaman/bin` to the environment variables `PATH`.
 The documentation can be found on the GitHub wiki page: https://github.com/nguyen-group/QERaman/wiki.
 It shows the input variables description for `raman.x`, `bands_mat.x`, and `ph_mat.x`, and also the format of the output files.
 
+# References and citing
+The theory behind the QERaman code is described in our pre-print:
+> QERaman: A open-source program for calculating resonance Raman spectroscopy based on Quantum ESPRESSO,
+>
+> Nguyen T. Hung, Jianqi Huang, Teng Yang, Riichiro Saito,
+>
+> https://arxiv.org/abs/xxxx
+
+The implementation of QERaman is built on the Quantum ESPRESSO package and the detail of the input variables can be found in the Quantum ESPRESSO book. If you use the QERaman code in your work, please consider citing the Quantum ESPRESSO package and book as well: 
+> https://doi.org/10.1088/0953-8984/21/39/395502 (for Quantum ESPRESSO package)
+>
+> https://doi.org/10.1201/9781003290964 (for Quantum ESPRESSO book)
+
 # Contributors
 - Nguyen Tuan Hung (Tohoku University, Japan)
 - Jianqi Huang (Institute of Metal Research, Chinese Academy of Sciences, China)
