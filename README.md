@@ -15,7 +15,7 @@ Step 2: Go to the source code in the QERaman directory to install the code:
     cd QERaman/src
     make all
 
-It noted that the reader should `make pw pp ph` in the Quantum ESPRESSO directory before `make all` in the QERaman directory. Also, consider adding the `QERaman/bin` to the environment variables `PATH`.
+It noted that the reader should do `make pw pp ph` in the Quantum ESPRESSO directory before `make all` in the QERaman directory since the Makefile of QERaman is linked to the libraries PW, PP, and PH of Quantum ESPRESSO. Also, consider adding the `QERaman/bin` to the environment variables `PATH`.
 
 # Documentation
 The documentation can be found on the GitHub wiki page: https://github.com/nguyen-group/QERaman/wiki.
@@ -29,7 +29,7 @@ The theory behind the QERaman code is described in our pre-print:
 >
 > https://arxiv.org/abs/xxxx
 
-The implementation of QERaman is built on the Quantum ESPRESSO package and the detail of the input variables can be found in the Quantum ESPRESSO book. If you use the QERaman code in your work, please consider citing the Quantum ESPRESSO package and book as well: 
+The implementation of QERaman is built on the Quantum ESPRESSO package, and the detail of the input variables can be found in the Quantum ESPRESSO book. If you use the QERaman code in your work, please consider citing the Quantum ESPRESSO package and book as well: 
 > https://doi.org/10.1088/0953-8984/21/39/395502 (for Quantum ESPRESSO package)
 >
 > https://doi.org/10.1201/9781003290964 (for Quantum ESPRESSO book)
