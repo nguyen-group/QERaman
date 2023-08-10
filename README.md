@@ -37,6 +37,7 @@ The implementation of QERaman is built on the Quantum ESPRESSO package, and the 
 # Contributors
 - Nguyen Tuan Hung (Tohoku University, Japan)
 - Jianqi Huang (Institute of Metal Research, Chinese Academy of Sciences, China)
+- Yuki Tatsumi (Tohoku University, Japan)
 - Teng Yang (Institute of Metal Research, Chinese Academy of Sciences, China)
 - Riichiro Saito (Tohoku University, Japan)
 
