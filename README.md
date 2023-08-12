@@ -25,7 +25,7 @@ It shows the input variables description for `raman.x`, `bands_mat.x`, and `ph_m
 The theory behind the QERaman code is described in our pre-print:
 > QERaman: A open-source program for calculating resonance Raman spectroscopy based on Quantum ESPRESSO,
 >
-> Nguyen T. Hung, Jianqi Huang, Teng Yang, Riichiro Saito,
+> Nguyen T. Hung, Jianqi Huang, Yuki Tatsumi, Teng Yang, Riichiro Saito,
 >
 > https://arxiv.org/abs/xxxx
 
