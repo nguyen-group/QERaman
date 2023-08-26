@@ -103,7 +103,7 @@
      ELSE IF (circular_pol .EQ. .FALSE. .AND.  nonpol .EQ. .TRUE.) THEN
         WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (p=XX,YY,ZZ,XY,YX,nonpol)")')
         DO irs = 1,nrs
-           WRITE(raman_spec,'(1x,f10.4,5(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
+           WRITE(raman_spec,'(1x,f10.4,6(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
                 intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,1,2,irs), &
                 intensity_raman(iel,2,1,irs),intensity_raman(iel,6,6,irs)
         ENDDO
