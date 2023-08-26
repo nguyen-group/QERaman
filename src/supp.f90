@@ -208,9 +208,9 @@ SUBROUTINE elphfil_epc(iq)
              epc2(jbnd, ibnd, ik, nu) = gamma2
              !
              WRITE(iuelph, '(3i9, 2f12.4, f20.10, 3e20.10)') ibnd, jbnd, nu, &
-               rytoev * et_collect(ibnd, ikk), rytoev * et_collect(jbnd, ikq), &
-               ryd2mev * w, ryd2mev * epc(jbnd, ibnd, ik, nu), &
-               ryd2mev * REAL(epc2(jbnd, ibnd, ik, nu)), ryd2mev * AIMAG(epc2(jbnd, ibnd, ik, nu))
+                rytoev * et_collect(ibnd, ikk), rytoev * et_collect(jbnd, ikq), &
+                ryd2mev * w, ryd2mev * epc(jbnd, ibnd, ik, nu), &
+                ryd2mev * REAL(epc2(jbnd, ibnd, ik, nu)), ryd2mev * AIMAG(epc2(jbnd, ibnd, ik, nu))
              !
            ENDDO
            !
