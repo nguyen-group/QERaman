@@ -139,6 +139,8 @@
   !  This subroutine reads the data file of matrix element of 
   !  dipole vector from modified bands.x in the QERaman code. 
   !
+  IMPLICIT NONE
+  !
   ! Local prameters
   INTEGER :: ik, ii, jj, ribi, ribf, rik
   CHARACTER(LEN=256) :: dummy
