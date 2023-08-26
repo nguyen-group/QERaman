@@ -23,12 +23,10 @@
   !
   !  This subroutine reads the variable from the input file.  
   !
-  !
   IMPLICIT NONE
   !
   INTEGER :: iel, ios
   REAL(DP) :: elaser1,elaser2,elaser3,elaser4,elaser5,elaser6,elaser7
-  !
   !
   namelist / inputraman / &
        outdir, prefix, fil_dvec, fil_elph, &
