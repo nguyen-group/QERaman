@@ -45,7 +45,8 @@
     ALLOCATE(rs(nrs))
     rs(:) = 0.0d0
     !ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),rtensorb(nel,nqs,3,3),matele_ramanb(nel,npol,npol,nqs))
-    ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),rtensor_interv(nel,nmode,nqs,3,3),rtensor_interv_k(nel,nmode,nks,nqs,3,3))
+    ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),&
+    rtensor_interv(nel,nmode,nqs,3,3),rtensor_interv_k(nel,nmode,nks,nqs,3,3))
     rtensor(:,:,:,:,:) = 0.0d0
     rtensor_interv(:,:,:,:,:) = 0.0d0
     rtensor_interv_k(:,:,:,:,:,:) = 0.0d0
