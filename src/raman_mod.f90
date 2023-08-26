@@ -166,11 +166,11 @@
   !
   SUBROUTINE init_polvec
   !
-  IF (circular_pol .EQ. .FALSE. .AND.  nonpol .EQ. .FALSE.) THEN
+  IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
      npol = 3
-  ELSEIF (circular_pol .EQ. .TRUE. .AND. nonpol .EQ. .FALSE.) THEN
+  ELSEIF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .FALSE.) THEN
      npol = 5
-  ELSEIF (nonpol .EQ. .TRUE.) THEN
+  ELSEIF (nonpol .EQV. .TRUE.) THEN
      npol = 6
   ENDIF
   !
@@ -190,7 +190,7 @@
   polvec(3,1) = cmplx(0.0d0, 0.0d0)
   polvec(3,2) = cmplx(0.0d0, 0.0d0)
   polvec(3,3) = CMPLX(1.0d0, 0.0d0)
-  IF (circular_pol .eq. .TRUE.) THEN
+  IF (circular_pol .EQV. .TRUE.) THEN
      !ips = 4, p=(1,i,0) Left handed circular polarizaed light
      polvec(4,1) = (1.0d0/SQRT(2.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(4,2) = (1.0d0/SQRT(2.0d0))*CMPLX(0.0d0, 1.0d0)
@@ -200,7 +200,7 @@
      polvec(5,2) = (1.0d0/SQRT(2.0d0))*CMPLX(0.0d0, -1.0d0)
      polvec(5,3) = CMPLX(0.0d0, 0.0d0)
   ENDIF
-  IF (nonpol .EQ. .TRUE.) THEN
+  IF (nonpol .EQV. .TRUE.) THEN
      polvec(6,1) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(6,2) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(6,3) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
