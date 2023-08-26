@@ -69,7 +69,7 @@
         nks2 = nks2 + 1
         k2(nks2,:) = (k(ik,:)+k(ik-1,:))/2.0d0
         dvec2(nks2,:,:,:) = ((dvec(ik,:,:,:)+dvec(ik-1,:,:,:))/2.0d0) * ((ABS(dvec(ik,:,:,:))+&
-        ABS(dvec(ik-1,:,:,:)))/2.0d0) / (ABS((dvec(ik,:,:,:)+dvec(ik-1,:,:,:))/2.0d0))
+           ABS(dvec(ik-1,:,:,:)))/2.0d0) / (ABS((dvec(ik,:,:,:)+dvec(ik-1,:,:,:))/2.0d0))
         matele_elph2(:,:,nks2,:,:) = (matele_elph(:,:,ik,:,:)+matele_elph(:,:,ik-1,:,:))/2.0d0
         eigv2(nks2,:) = (eigv(ik,:)+eigv(ik-1,:))/2.0d0
         nks2 = nks2 + 1
@@ -119,7 +119,7 @@
            nks3 = nks3 + 1
            k2(nks3,:) = (k3(ik2,:)+k3(ik2-nky,:))/2.0d0
            dvec2(nks3,:,:,:) = ((dvec3(ik2,:,:,:)+dvec3(ik2-nky,:,:,:))/2.0d0) * ((ABS(dvec3(ik2,:,:,:))+&
-           ABS(dvec3(ik2-nky,:,:,:)))/2.0d0) / (ABS((dvec3(ik2,:,:,:)+dvec3(ik2-nky,:,:,:))/2.0d0))
+              ABS(dvec3(ik2-nky,:,:,:)))/2.0d0) / (ABS((dvec3(ik2,:,:,:)+dvec3(ik2-nky,:,:,:))/2.0d0))
            matele_elph2(:,:,nks3,:,:) = (matele_elph3(:,:,ik2,:,:)+matele_elph3(:,:,ik2-nky,:,:))/2.0d0
            eigv2(nks3,:) = (eigv3(ik2,:)+eigv3(ik2-nky,:))/2.0d0
         END DO
