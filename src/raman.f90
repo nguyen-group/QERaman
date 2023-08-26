@@ -30,7 +30,7 @@
   WRITE(stdout,'(a)')"  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  "
   WRITE(stdout,'(a)')"                                                                            "
   WRITE(stdout,'(5x,"Welcome to the Raman program: QERaman")') 
-  WRITE(stdout,'(5x,"Please cite our pre-print: https://arxiv.org/abs/xxxx")')
+  WRITE(stdout,'(5x,"Please cite our pre-print: https://arxiv.org/abs/2308.05900")')
   WRITE(stdout,'(/5x,a)') repeat('=',67)
   !
   CALL date_and_time(t(1),t(2),t(3),ti)
