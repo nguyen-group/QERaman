@@ -164,12 +164,12 @@
         DO ibf = 1, nbnd
            WRITE(cmopt2,'(I3)') ibf
            filename_matele_opt = TRIM(ADJUSTL(outdir_matele_opt))//'matele_opt_'//&
-           TRIM(ADJUSTL(cmopt1))//'_'//TRIM(ADJUSTL(cmopt2))//'.dat'
+              &TRIM(ADJUSTL(cmopt1))//'_'//TRIM(ADJUSTL(cmopt2))//'.dat'
            OPEN(fn_matele_opt, file=filename_matele_opt)
            DO ik = 1, nks
               DO ip = 1, npol
-                 matele_opt(ik,ibi,ibf,ip) = polvec(ip,1)*CONJG(dvec(ik,ibi,ibf,1)) + &
-                    polvec(ip,2)*CONJG(dvec(ik,ibi,ibf,2)) + polvec(ip,3)*CONJG(dvec(ik,ibi,ibf,3))
+                 matele_opt(ik,ibi,ibf,ip) = polvec(ip,1)*CONJG(dvec(ik,ibi,ibf,1)) &
+                    + polvec(ip,2)*CONJG(dvec(ik,ibi,ibf,2)) + polvec(ip,3)*CONJG(dvec(ik,ibi,ibf,3))
               END DO
               !IF (ik > 1 .AND. (k(ik,1) > k(ik-1,1)+eps .OR. k(ik,1) < k(ik-1,1)-eps)) THEN
               !   WRITE(fn_matele_opt,*) ' '
@@ -177,25 +177,31 @@
               !write(301,'(3(1x,f10.4),5(1x,e16.8e3))') k(ik,1), k(ik,2), k (ik,3), abs(matele_opt(ik,4,5,1)), abs(matele_opt(ik,5,4,2)), abs(matele_opt(ik,5,4,3)), abs(matele_elph(5,1,ik,5,5)), abs(matele_elph(6,1,ik,5,5))
                    IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
                       WRITE(fn_matele_opt,'(3(1x,f10.4),9(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), &
-                         REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
                          REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3))
                    ELSE IF (circular_pol .EQV. .TRUE. .AND.  nonpol .EQV. .FALSE.) THEN
                       WRITE(fn_matele_opt,'(3(1x,f10.4),15(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), &
-                         REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
-                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3)), &
-                         REAL(matele_opt(ik,ibi,ibf,4)), AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
+                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
+                         ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
                          REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5))
                    ELSE
                       !WRITE(fn_matele_opt,'(3(1x,f10.4),18(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6))
                       WRITE(fn_matele_opt,'(3(1x,f10.4),22(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), &
-                         REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
-                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3)), &
-                         REAL(matele_opt(ik,ibi,ibf,4)), AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
-                         REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5)), &
-                         REAL(matele_opt(ik,ibi,ibf,6)), AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6)), &
+                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
+                         ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
+                         REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), &
+                         ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), &
+                         AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6)), &
                          REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
                          AIMAG(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
                          REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,4))), &
@@ -216,7 +222,7 @@
         DO ibf = 1, nbnd
            WRITE(cmelph2,'(I3)') ibf
            filename_matele_elph = TRIM(ADJUSTL(outdir_matele_elph))//'matele_elph_'//&
-              TRIM(ADJUSTL(cmelph1))//'_'//TRIM(ADJUSTL(cmelph2))//'.dat'
+              &TRIM(ADJUSTL(cmelph1))//'_'//TRIM(ADJUSTL(cmelph2))//'.dat'
            OPEN(fn_matele_elph, file=filename_matele_elph)
            DO ik = 1, nks
               !IF (ik > 1 .AND. (k(ik,1) > k(ik-1,1)+eps .OR. k(ik,1) < k(ik-1,1)-eps)) THEN
@@ -244,7 +250,7 @@
               !DO ibf = 1, nbnd
                  !WRITE(cramank2,'(I3)') ibf
                  filename_raman_k = TRIM(ADJUSTL(outdir_raman_k))//'raman_k_mode'//&
-                 TRIM(ADJUSTL(mramank))//'_elaser'//TRIM(ADJUSTL(eramank))//'.dat'
+                    &TRIM(ADJUSTL(mramank))//'_elaser'//TRIM(ADJUSTL(eramank))//'.dat'
                  OPEN(fn_raman_k, file=filename_raman_k)
                  DO ik = 1, nks
                     !IF (ik > 1 .AND. (k(ik,1) > k(ik-1,1)+eps .OR. k(ik,1) < k(ik-1,1)-eps)) THEN

@@ -23,10 +23,12 @@
   !
   !  This subroutine reads the variable from the input file.  
   !
+  !
   IMPLICIT NONE
   !
   INTEGER :: iel, ios
   REAL(DP) :: elaser1,elaser2,elaser3,elaser4,elaser5,elaser6,elaser7
+  !
   !
   namelist / inputraman / &
        outdir, prefix, fil_dvec, fil_elph, &
@@ -136,8 +138,6 @@
   !
   !  This subroutine reads the data file of matrix element of 
   !  dipole vector from modified bands.x in the QERaman code. 
-  !
-  IMPLICIT NONE
   !
   ! Local prameters
   INTEGER :: ik, ii, jj, ribi, ribf, rik

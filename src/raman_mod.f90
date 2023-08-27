@@ -166,10 +166,16 @@
   !
   SUBROUTINE init_polvec
   !
-  IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
-     npol = 3
-  ELSEIF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .FALSE.) THEN
-     npol = 5
+  !IF (circular_pol .EQ. .FALSE. .AND.  nonpol .EQ. .FALSE.) THEN
+  !   npol = 3
+  !ELSEIF (circular_pol .EQ. .TRUE. .AND. nonpol .EQ. .FALSE.) THEN
+  !   npol = 5    
+  IF (nonpol .EQV. .FALSE.) THEN
+     IF (circular_pol .EQV. .FALSE.) THEN
+        npol =3
+     ELSEIF (circular_pol .EQV. .TRUE.) THEN
+        npol = 5
+     ENDIF
   ELSEIF (nonpol .EQV. .TRUE.) THEN
      npol = 6
   ENDIF

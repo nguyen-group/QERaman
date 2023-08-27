@@ -46,7 +46,7 @@
     rs(:) = 0.0d0
     !ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),rtensorb(nel,nqs,3,3),matele_ramanb(nel,npol,npol,nqs))
     ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),&
-       rtensor_interv(nel,nmode,nqs,3,3),rtensor_interv_k(nel,nmode,nks,nqs,3,3))
+       &rtensor_interv(nel,nmode,nqs,3,3),rtensor_interv_k(nel,nmode,nks,nqs,3,3))
     rtensor(:,:,:,:,:) = 0.0d0
     rtensor_interv(:,:,:,:,:) = 0.0d0
     rtensor_interv_k(:,:,:,:,:,:) = 0.0d0
@@ -156,7 +156,7 @@
                       !rs(irs) = 2.0d-4 * DBLE(irs)
                       !
                       r = r + ((DBLE(CONJG(matele_raman(iel,ipi,ips,imode,iq))*matele_raman(iel,ipi,ips,imode,iq))) &
-                      * (1.0d0/pi) * (gamma_raman/((eq(imode,iq)-rs(irs))**2.0d0+gamma_raman**2.0d0))) 
+                          * (1.0d0/pi) * (gamma_raman/((eq(imode,iq)-rs(irs))**2.0d0+gamma_raman**2.0d0))) 
                       !
                       ! by Lorentzian function (see page 2 in PRB 97, 115407 (2018))
                       ! intensity_raman(iel,ipi,ips,irs) = intensity_raman(iel,ipi,ips,irs) + r &
@@ -199,13 +199,13 @@
         ! [D(k,f2,i)*M_q(v,k,f1,f2)*D(k,i,f1)]
         ! Raman intensity should proportion to 1/E_L^4 since M_opt proportion to D/E_L
         rt = (dvec(ik,ibn2,ibi,i) / (elaser(iel)-eq(imode,iq))) &
-             * matele_elph(imode,iq,ik,ibn1,ibn2) * (dvec(ik,ibi,ibn1,j) / elaser(iel))
+            * matele_elph(imode,iq,ik,ibn1,ibn2) * (dvec(ik,ibi,ibn1,j) / elaser(iel))
         !rt = dvec(ik,ibn2,ibi,i) * matele_elph(imode,iq,ik,ibn1,ibn2) * dvec(ik,ibi,ibn1,j)
         ! Non-resonant
         !  rt = rt / ((eigv(ik,ibn1)-eigv(ik,ibi)) * (eigv(ik,ibn2)-eigv(ik,ibi)))
         ! Resonant condition
         rt = rt / ((elaser(iel)-(eigv(ik,ibn1)-eigv(ik,ibi))-im*gamma) &
-             * (elaser(iel)-(eigv(ik,ibn2)-eigv(ik,ibi))-eq(imode,iq)-im*gamma))
+            * (elaser(iel)-(eigv(ik,ibn2)-eigv(ik,ibi))-eq(imode,iq)-im*gamma))
         !make Raman tensor
         rtensor_k(iel,imode,ik,iq,i,j) = rtensor_k(iel,imode,ik,iq,i,j) + rt
      END DO
