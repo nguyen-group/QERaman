@@ -93,37 +93,41 @@
      OPEN(raman_spec,file=TRIM(ADJUSTL(filename_raman_spec)))
      WRITE(raman_spec,'("#Raman spectra")')
      WRITE(raman_spec,'(A13,1x,f6.2,1x,A2)') '#Laser energy', elaser(iel)*ry2ev, 'eV'
-     IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
-        WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (p=XX,YY,ZZ,XY,YX)")')
-        DO irs = 1,nrs
-           WRITE(raman_spec,'(1x,f10.4,5(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
-                intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,1,2,irs), &
-                intensity_raman(iel,2,1,irs)
-        ENDDO
-     ELSE IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .TRUE.) THEN
-        WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (p=XX,YY,ZZ,XY,YX,nonpol)")')
-        DO irs = 1,nrs
-           WRITE(raman_spec,'(1x,f10.4,6(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
-                intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,1,2,irs), &
-                intensity_raman(iel,2,1,irs),intensity_raman(iel,6,6,irs)
-        ENDDO
-     ELSE IF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .FALSE.) THEN
-        WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (XX,YY,ZZ,s+s+,s-s-,XY,YX,s+s-,s-s+)")')
-        DO irs = 1,nrs
-           WRITE(raman_spec,'(1x,f10.4,9(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
-                intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,4,4,irs), &
-                intensity_raman(iel,5,5,irs),intensity_raman(iel,1,2,irs),intensity_raman(iel,2,1,irs), &
-                intensity_raman(iel,4,5,irs),intensity_raman(iel,5,4,irs)
-        ENDDO
-     ELSE IF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .TRUE.) THEN
-                WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (XX,YY,ZZ,s+s+,s-s-,XY,YX,s+s-,s-s+,nonpol)")')
-        DO irs = 1,nrs
-           WRITE(raman_spec,'(1x,f10.4,10(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
-                intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,4,4,irs), &
-                intensity_raman(iel,5,5,irs),intensity_raman(iel,1,2,irs),intensity_raman(iel,2,1,irs), &
-                intensity_raman(iel,4,5,irs),intensity_raman(iel,5,4,irs),intensity_raman(iel,6,6,irs)
-        ENDDO
-     ENDIF
+     IF (circular_pol .EQV. .FALSE.) THEN
+        IF (nonpol .EQV. .FALSE.) THEN
+           WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (p=XX,YY,ZZ,XY,YX)")')
+           DO irs = 1,nrs
+              WRITE(raman_spec,'(1x,f10.4,5(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
+                 intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,1,2,irs), &
+                 intensity_raman(iel,2,1,irs)
+           ENDDO
+        ELSE IF (nonpol .EQV. .TRUE.) THEN
+           WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (p=XX,YY,ZZ,XY,YX,nonpol)")')
+           DO irs = 1,nrs
+              WRITE(raman_spec,'(1x,f10.4,6(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
+                 intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,1,2,irs), &
+                 intensity_raman(iel,2,1,irs),intensity_raman(iel,6,6,irs)
+           ENDDO
+        END IF
+     ELSE IF (circular_pol .EQV. .TRUE.) THEN
+        IF (nonpol .EQV. .FALSE.) THEN
+           WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (XX,YY,ZZ,s+s+,s-s-,XY,YX,s+s-,s-s+)")')
+           DO irs = 1,nrs
+              WRITE(raman_spec,'(1x,f10.4,9(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
+                 intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,4,4,irs), &
+                 intensity_raman(iel,5,5,irs),intensity_raman(iel,1,2,irs),intensity_raman(iel,2,1,irs), &
+                 intensity_raman(iel,4,5,irs),intensity_raman(iel,5,4,irs)
+           ENDDO
+        ELSE IF (nonpol .EQV. .TRUE.) THEN
+           WRITE(raman_spec,'("#Raman shift (cm-1), Raman Spectra (XX,YY,ZZ,s+s+,s-s-,XY,YX,s+s-,s-s+,nonpol)")')
+           DO irs = 1,nrs
+              WRITE(raman_spec,'(1x,f10.4,10(1x,e16.8e3))') rs(irs)*ry2cm,intensity_raman(iel,1,1,irs), &
+                 intensity_raman(iel,2,2,irs),intensity_raman(iel,3,3,irs),intensity_raman(iel,4,4,irs), &
+                 intensity_raman(iel,5,5,irs),intensity_raman(iel,1,2,irs),intensity_raman(iel,2,1,irs), &
+                 intensity_raman(iel,4,5,irs),intensity_raman(iel,5,4,irs),intensity_raman(iel,6,6,irs)
+           ENDDO
+        END IF
+     END IF
      CLOSE(raman_spec)
   ENDDO
   !
@@ -175,38 +179,40 @@
               !   WRITE(fn_matele_opt,*) ' '
               !END IF
               !write(301,'(3(1x,f10.4),5(1x,e16.8e3))') k(ik,1), k(ik,2), k (ik,3), abs(matele_opt(ik,4,5,1)), abs(matele_opt(ik,5,4,2)), abs(matele_opt(ik,5,4,3)), abs(matele_elph(5,1,ik,5,5)), abs(matele_elph(6,1,ik,5,5))
-                   IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
-                      WRITE(fn_matele_opt,'(3(1x,f10.4),9(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
-                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
-                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3))
-                   ELSE IF (circular_pol .EQV. .TRUE. .AND.  nonpol .EQV. .FALSE.) THEN
-                      WRITE(fn_matele_opt,'(3(1x,f10.4),15(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
-                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
-                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
-                         ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
-                         REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5))
-                   ELSE
-                      !WRITE(fn_matele_opt,'(3(1x,f10.4),18(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6))
-                      WRITE(fn_matele_opt,'(3(1x,f10.4),22(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
-                         REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
-                         ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
-                         REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
-                         ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
-                         REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), &
-                         ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), &
-                         AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6)), &
-                         REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
-                         AIMAG(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
-                         REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,4))), &
-                         AIMAG(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,4)))
-                   END IF
+              IF (nonpol .EQV. .FALSE.) THEN
+                 IF (circular_pol .EQV. .FALSE.) THEN
+                    WRITE(fn_matele_opt,'(3(1x,f10.4),9(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
+                       REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                       ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                       AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                       REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3))
+                 ELSE IF (circular_pol .EQV. .TRUE.) THEN
+                    WRITE(fn_matele_opt,'(3(1x,f10.4),15(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
+                       REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                       ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                       AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                       REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
+                       ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
+                       AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
+                       REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5))
+                 ENDIF
+              ELSE
+                 !WRITE(fn_matele_opt,'(3(1x,f10.4),18(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6))
+                 WRITE(fn_matele_opt,'(3(1x,f10.4),22(1x,e16.8e3))') k(ik,1), k(ik,2), k(ik,3), &
+                    REAL(matele_opt(ik,ibi,ibf,1)), AIMAG(matele_opt(ik,ibi,ibf,1)), &
+                    ABS(matele_opt(ik,ibi,ibf,1)), REAL(matele_opt(ik,ibi,ibf,2)), &
+                    AIMAG(matele_opt(ik,ibi,ibf,2)), ABS(matele_opt(ik,ibi,ibf,2)), &
+                    REAL(matele_opt(ik,ibi,ibf,3)), AIMAG(matele_opt(ik,ibi,ibf,3)), &
+                    ABS(matele_opt(ik,ibi,ibf,3)), REAL(matele_opt(ik,ibi,ibf,4)), &
+                    AIMAG(matele_opt(ik,ibi,ibf,4)), ABS(matele_opt(ik,ibi,ibf,4)), &
+                    REAL(matele_opt(ik,ibi,ibf,5)), AIMAG(matele_opt(ik,ibi,ibf,5)), &
+                    ABS(matele_opt(ik,ibi,ibf,5)), REAL(matele_opt(ik,ibi,ibf,6)), &
+                    AIMAG(matele_opt(ik,ibi,ibf,6)), ABS(matele_opt(ik,ibi,ibf,6)), &
+                    REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
+                    AIMAG(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,5))), &
+                    REAL(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,4))), &
+                    AIMAG(matele_opt(ik,ibi,ibf,4)*CONJG(matele_opt(ik,ibi,ibf,4)))
+              END IF
            END DO
         END DO
      END DO
@@ -256,44 +262,48 @@
                     !IF (ik > 1 .AND. (k(ik,1) > k(ik-1,1)+eps .OR. k(ik,1) < k(ik-1,1)-eps)) THEN
                     !   WRITE(fn_raman_k,*) ' '
                     !END IF
-                    IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .FALSE.) THEN
-                       WRITE(fn_raman_k,'(3(1x,f10.4),10(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
-                            REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
-                            REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
-                            REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
-                            REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
-                            REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1))
-                    ELSE IF (circular_pol .EQV. .FALSE. .AND.  nonpol .EQV. .TRUE.) THEN
-                       WRITE(fn_raman_k,'(3(1x,f10.4),12(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
-                            REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
-                            REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
-                            REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
-                            REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
-                            REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
-                            REAL(raman_k(iel,6,6,imode,ik,1)), AIMAG(raman_k(iel,6,6,imode,ik,1))
-                    ELSE IF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .FALSE.) THEN
-                       WRITE(fn_raman_k,'(3(1x,f10.4),18(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
-                            REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
-                            REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
-                            REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
-                            REAL(raman_k(iel,4,4,imode,ik,1)), AIMAG(raman_k(iel,4,4,imode,ik,1)), &
-                            REAL(raman_k(iel,5,5,imode,ik,1)), AIMAG(raman_k(iel,5,5,imode,ik,1)), &
-                            REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
-                            REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
-                            REAL(raman_k(iel,4,5,imode,ik,1)), AIMAG(raman_k(iel,4,5,imode,ik,1)), &
-                            REAL(raman_k(iel,5,4,imode,ik,1)), AIMAG(raman_k(iel,5,4,imode,ik,1))
-                    ELSE IF (circular_pol .EQV. .TRUE. .AND. nonpol .EQV. .TRUE.) THEN
-                       WRITE(fn_raman_k,'(3(1x,f10.4),20(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
-                            REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
-                            REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
-                            REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
-                            REAL(raman_k(iel,4,4,imode,ik,1)), AIMAG(raman_k(iel,4,4,imode,ik,1)), &
-                            REAL(raman_k(iel,5,5,imode,ik,1)), AIMAG(raman_k(iel,5,5,imode,ik,1)), &
-                            REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
-                            REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
-                            REAL(raman_k(iel,4,5,imode,ik,1)), AIMAG(raman_k(iel,4,5,imode,ik,1)), &
-                            REAL(raman_k(iel,5,4,imode,ik,1)), AIMAG(raman_k(iel,5,4,imode,ik,1)), &
-                            REAL(raman_k(iel,6,6,imode,ik,1)), AIMAG(raman_k(iel,6,6,imode,ik,1))
+                    IF (circular_pol .EQV. .FALSE.) THEN
+                       IF (nonpol .EQV. .FALSE.) THEN
+                          WRITE(fn_raman_k,'(3(1x,f10.4),10(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
+                             REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
+                             REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
+                             REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
+                             REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
+                             REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1))
+                       ELSE IF (nonpol .EQV. .TRUE.) THEN
+                          WRITE(fn_raman_k,'(3(1x,f10.4),12(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
+                             REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
+                             REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
+                             REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
+                             REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
+                             REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
+                             REAL(raman_k(iel,6,6,imode,ik,1)), AIMAG(raman_k(iel,6,6,imode,ik,1))
+                       END IF
+                    ELSE IF (circular_pol .EQV. .TRUE.) THEN
+                       IF (nonpol .EQV. .FALSE.) THEN
+                          WRITE(fn_raman_k,'(3(1x,f10.4),18(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
+                             REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
+                             REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
+                             REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
+                             REAL(raman_k(iel,4,4,imode,ik,1)), AIMAG(raman_k(iel,4,4,imode,ik,1)), &
+                             REAL(raman_k(iel,5,5,imode,ik,1)), AIMAG(raman_k(iel,5,5,imode,ik,1)), &
+                             REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
+                             REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
+                             REAL(raman_k(iel,4,5,imode,ik,1)), AIMAG(raman_k(iel,4,5,imode,ik,1)), &
+                             REAL(raman_k(iel,5,4,imode,ik,1)), AIMAG(raman_k(iel,5,4,imode,ik,1))
+                       ELSE IF (nonpol .EQV. .TRUE.) THEN
+                          WRITE(fn_raman_k,'(3(1x,f10.4),20(1x,e16.8e3))')  k(ik,1), k(ik,2), k (ik,3), &
+                             REAL(raman_k(iel,1,1,imode,ik,1)), AIMAG(raman_k(iel,1,1,imode,ik,1)), &
+                             REAL(raman_k(iel,2,2,imode,ik,1)), AIMAG(raman_k(iel,2,2,imode,ik,1)), &
+                             REAL(raman_k(iel,3,3,imode,ik,1)), AIMAG(raman_k(iel,3,3,imode,ik,1)), &
+                             REAL(raman_k(iel,4,4,imode,ik,1)), AIMAG(raman_k(iel,4,4,imode,ik,1)), &
+                             REAL(raman_k(iel,5,5,imode,ik,1)), AIMAG(raman_k(iel,5,5,imode,ik,1)), &
+                             REAL(raman_k(iel,1,2,imode,ik,1)), AIMAG(raman_k(iel,1,2,imode,ik,1)), &
+                             REAL(raman_k(iel,2,1,imode,ik,1)), AIMAG(raman_k(iel,2,1,imode,ik,1)), &
+                             REAL(raman_k(iel,4,5,imode,ik,1)), AIMAG(raman_k(iel,4,5,imode,ik,1)), &
+                             REAL(raman_k(iel,5,4,imode,ik,1)), AIMAG(raman_k(iel,5,4,imode,ik,1)), &
+                             REAL(raman_k(iel,6,6,imode,ik,1)), AIMAG(raman_k(iel,6,6,imode,ik,1))
+                       ENDIF
                     END IF
                  END DO
               !END DO

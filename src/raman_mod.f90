@@ -173,12 +173,12 @@
   IF (nonpol .EQV. .FALSE.) THEN
      IF (circular_pol .EQV. .FALSE.) THEN
         npol =3
-     ELSEIF (circular_pol .EQV. .TRUE.) THEN
+     ELSE IF (circular_pol .EQV. .TRUE.) THEN
         npol = 5
-     ENDIF
-  ELSEIF (nonpol .EQV. .TRUE.) THEN
+     END IF
+  ELSE IF (nonpol .EQV. .TRUE.) THEN
      npol = 6
-  ENDIF
+  END IF
   !
   ALLOCATE(polvec(npol,3))
   polvec(:,:) = 0.0d0
@@ -205,12 +205,12 @@
      polvec(5,1) = (1.0d0/SQRT(2.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(5,2) = (1.0d0/SQRT(2.0d0))*CMPLX(0.0d0, -1.0d0)
      polvec(5,3) = CMPLX(0.0d0, 0.0d0)
-  ENDIF
+  END IF
   IF (nonpol .EQV. .TRUE.) THEN
      polvec(6,1) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(6,2) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
      polvec(6,3) = (1.0d0/SQRT(3.0d0))*CMPLX(1.0d0, 0.0d0)
-  ENDIF
+  END IF
   !
   END SUBROUTINE init_polvec
   !
