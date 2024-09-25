@@ -164,8 +164,8 @@ SUBROUTINE elphfil_epc(iq)
      !
      el_ph_sum(:,:) = (0.0d0, 0.0d0)
      DO ik = 1, nksqtot
-       ikk = ikks(ik)
-       ikq = ikqs(ik)
+       ikk = ikks_collect(ik)
+       ikq = ikqs_collect(ik)
        WRITE(iuelph, '(4f12.7, 2i9)') xk_collect(:,ikk), wk_collect(ikk), ikk, ikq
        !
        DO ibnd = 1, nbnd
