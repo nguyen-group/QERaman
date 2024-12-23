@@ -3,7 +3,7 @@ An open-source program for computing the first-order resonance Raman spectroscop
 ![logo](https://github.com/nguyen-group/QERaman/assets/46996256/9f8f7137-03f1-435a-8e77-3de463bb7afa)
 
 # Requirement
-QERaman requires Quantum ESPRESSO version >= 7.1
+QERaman requires Quantum ESPRESSO version 7.1, 7.2 or 7.3. 
 
 # Installation
 Step 1: Download the latest version of QERaman inside the main Quantum ESPRESSO directory:
