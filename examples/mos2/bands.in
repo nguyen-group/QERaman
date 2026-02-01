@@ -1,7 +1,0 @@
-&BANDS
-  prefix   = 'MoS2'
-  outdir   = './tmp'
-  filband  = 'MoS2.bands'
-  lp       = .true.
-  filp     = 'MoS2.dvec'
-/

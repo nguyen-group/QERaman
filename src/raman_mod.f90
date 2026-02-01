@@ -16,11 +16,11 @@
        prefix, outdir, fil_dvec, fil_elph, &
        sorb, circular_pol, nonpol, plot_matele_opt, plot_matele_elph, plot_raman_k, &
        nks, nksq, nbnd, nspin, npol, nmode, nqs, nel, nrs, nbnd_occ, n_kinterp, &
-       gamma, gamma_raman, rs_start, rs_end, &
-       k, q, wk, wq, eigv, eq, polvec, &
-       raman_k, intensity_raman, rs, rtensor, rtensor_k, &
+       gamma, gamma_raman, rs_start, rs_end, temp, efermi, &
+       k, q, wk, wq, eigv, eq, polvec, raman_k, intensity_raman, rs, &
+       rtensor, rtensor_k, rtensor_lpl, rtensor_llp, rtensor_pll, &
        dvec, matele_opt, matele_elph, elaser, &
-       pi, im, &
+       kb, pi, im, &
        ry2ev, ev2ry, ev2cm, ry2cm
   !
   !
@@ -83,6 +83,10 @@
   !! Broadning factor for Raman formula
   REAL (DP) :: gamma_raman
   !! Broadning factor to plot the Raman intensity
+  REAL (DP) :: temp
+  !! Temperature (K) 
+  REAL (DP) :: efermi
+  !! Fermi energy (eV)
   REAL (DP) rs_start, rs_end
   !! Claculation range of ramanshift (eV)
   !
@@ -128,10 +132,17 @@
   COMPLEX(DP), ALLOCATABLE :: rtensor(:,:,:,:,:)
   !! Raman tensor rtensor(iel,imode,iq,i,j)
   COMPLEX(DP), ALLOCATABLE :: rtensor_k(:,:,:,:,:,:)
-  !! Raman tensor for each k point rtensor_k(iel,imode,ik,iq,i,j)
+  !! Raman tensor for each k point of total Raman tensor rtensor_k(iel,imode,ik,iq,i,j)
+  COMPLEX(DP), ALLOCATABLE :: rtensor_lpl(:,:,:,:,:,:)
+  !! Raman tensor for each k point rtensor_lpl(iel,imode,ik,iq,i,j)
+  COMPLEX(DP), ALLOCATABLE :: rtensor_llp(:,:,:,:,:,:)
+  !! Raman tensor for each k point rtensor_llp(iel,imode,ik,iq,i,j)
+  COMPLEX(DP), ALLOCATABLE :: rtensor_pll(:,:,:,:,:,:)
+  !! Raman tensor for each k point rtensor_pll(iel,imode,ik,iq,i,j)
   !
   ! parameter
   REAL (DP) pi
+  REAL (DP) kb
   !! circumference ratio
   COMPLEX (DP) im
   !! imaginary i
@@ -153,8 +164,10 @@
   SUBROUTINE init_parameter
   !
   pi = acos(-1.0d0)
+  !kb = 8.617333262145d-5  ! Boltzmann constant [eV/K]
+  kb = 6.333622d-6   ! Boltzmann constant [Ry/K]
   !ry2ev = 27.2114d0
-  ry2eV = 13.60568d0
+  ry2ev = 13.60568d0
   ev2ry = 1.0d0 / ry2ev
   ev2cm = 8065.0d0
   ry2cm = ry2ev * ev2cm

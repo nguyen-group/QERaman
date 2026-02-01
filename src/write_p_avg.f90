@@ -37,8 +37,13 @@ SUBROUTINE write_p_avg(filp, spin_component, firstk, lastk)
   INTEGER :: spin_component, nks1, nks2, firstk, lastk, npw, ndim
   INTEGER :: iunout, ios, ik, ibnd, jbnd, ipol, nbnd_occ
   COMPLEX(DP), ALLOCATABLE :: ppsi(:,:), ppsi_us(:,:), matp(:,:,:)
-  CHARACTER (len=256) :: filp, namefile
+  COMPLEX(DP)              :: za, zb, zc 
+  CHARACTER (len=256)      :: filp, namefile
+  REAL(DP)                 :: jet   
   !
+  za=cmplx(1.d0,0.d0, kind=dp)
+  zb = cmplx(0.d0,0.d0, kind=dp) 
+  zc = cmplx(0.d0,0.5d0,kind=dp) 
   IF (lda_plus_u) CALL errore('write_p_avg', &
                        'write_p_avg not working with LDA+U',1)
   ALLOCATE(matp(nbnd,nbnd,3))
@@ -86,7 +91,8 @@ SUBROUTINE write_p_avg(filp, spin_component, firstk, lastk)
      !
 !     ALLOCATE(ppsi(npwx*npol,nbnd_occ))
 !     ALLOCATE(ppsi_us(npwx*npol,nbnd_occ))
-!============= Adding by Nguyen 10/10/2022 ===============================
+!============= Adding by Nguyen 15/6/2025 ===============================
+! Change nbnd_occ to nbnd to compute the dipole matrix elements for all bands
       ALLOCATE(ppsi(npwx*npol,nbnd))
       ALLOCATE(ppsi_us(npwx*npol,nbnd))
 !===========================================================================
@@ -106,63 +112,38 @@ SUBROUTINE write_p_avg(filp, spin_component, firstk, lastk)
      ELSE
         ndim = npw
      END IF
-!     DO ipol=1,3
-!        CALL compute_ppsi(ppsi, ppsi_us, ik, ipol, nbnd_occ, spin_component)
-        ! FIXME: use ZGEMM instead of DOT_PRODUCT
-!        DO ibnd=nbnd_occ+1,nbnd
-!           DO jbnd=1,nbnd_occ
-!              matp(ibnd-nbnd_occ,jbnd,ipol)=  &
-!                   DOT_PRODUCT( evc(1:ndim,ibnd),ppsi(1:ndim,jbnd) )
-!              IF (okvan) THEN
-!                 matp(ibnd-nbnd_occ,jbnd,ipol)=                  &
-!                      matp(ibnd-nbnd_occ,jbnd,ipol)+             &
-!                      (0.d0,0.5d0)*(et(ibnd,ik)-et(jbnd,ik))*  &
-!                      DOT_PRODUCT( evc(1:ndim,ibnd),ppsi_us(1:ndim,jbnd))
-!              ENDIF
-!           ENDDO
-!        ENDDO
-!     ENDDO
-!============= Adding by Nguyen 10/10/2022 ===============================
-     ! Dipole vector for all band
+     matp = cmplx( 0._dp, 0._dp, kind = dp) 
+!============= Adding by Nguyen 15/6/2025 ===============================
+     ! Dipole vector Dij for all band indexes 
+     ! matp(ibnd,jbnd,ipol) = <psi(ik,ibnd)||p_ipol||psi(ik,jbnd)>
      DO ipol=1,3
-        ! ppsi contains P_c^+ p | psi_ik > for the ipol cartesian coordinate
-        ! ppsi_us contains the additional term required for US PP
-        ! see J. Chem. Phys. 120, 9935 (2004)
         CALL compute_ppsi(ppsi, ppsi_us, ik, ipol, nbnd, spin_component)
-        ! FIXME: use ZGEMM instead of DOT_PRODUCT
-        DO ibnd = 1, nbnd
-           DO jbnd = 1, nbnd
-              matp(ibnd,jbnd,ipol)=  &
-                   DOT_PRODUCT( evc(1:ndim,jbnd),ppsi(1:ndim,ibnd) )
-              IF (okvan) THEN
-                 matp(ibnd,jbnd,ipol)=                  &
-                      matp(ibnd,jbnd,ipol)+             &
-                      (0.d0,0.5d0)*(et(jbnd,ik)-et(ibnd,ik))*  &
-                      DOT_PRODUCT( evc(1:ndim,jbnd),ppsi_us(1:ndim,ibnd))
-              ENDIF
-           ENDDO
-        ENDDO
-     ENDDO
+        IF (okvan) THEN 
+          CALL zgemm ('C','N', nbnd, nbnd, ndim, za, evc(1, 1), size(evc,1),  & 
+                                       ppsi_us(1, 1), size(ppsi_us,1),      &
+                                       zb, matp(1, 1,ipol), nbnd)
+          DO jbnd = 1, nbnd  
+            jet = et(jbnd,ik)
+            matp(1:nbnd,jbnd, ipol)  = matp(1:nbnd,jbnd, ipol) * zc * (et(1:nbnd,ik) - jet)
+          END DO 
+          zb  = cmplx (1.d0, 0.d0, kind = dp)  
+        END IF 
+        CALL zgemm ('C','N', nbnd, nbnd, ndim, za, evc(1, 1), size(evc,1),     & 
+                                       ppsi(1, 1), size(ppsi,1),        & 
+                                       zb, matp(1, 1, ipol), nbnd)
+        !Transpose (matp(ibnd,jbnd,ipol) to matp(jbnd,ibnd,ipol))
+        !matp(:,:,ipol) = conjg(matp(:,:,ipol))
+        !
+     END DO
 !===========================================================================
      DEALLOCATE(ppsi)
      DEALLOCATE(ppsi_us)
      CALL mp_sum(matp, intra_bgrp_comm)
 
      IF (ionode) THEN
-!        IF (ik == nks1) &
-!           WRITE (iunout, '(" &p_mat nbnd=",i4,", nks=",i4," /")') &
-!                 nbnd, nks2-nks1+1
-!        WRITE (iunout, '(10x,3f10.6,i7)') xk(1,ik),xk(2,ik),xk(3,ik), &
-!                                          nbnd_occ
-!
-!        DO ipol=1,3
-!           WRITE (iunout, '(i3)') ipol
-!           DO ibnd=nbnd_occ+1,nbnd
-!              WRITE (iunout, '(5f15.8)') &
-!                    (abs(matp(ibnd-nbnd_occ,jbnd,ipol))**2, jbnd=1,nbnd_occ)
 !============= Adding by Nguyen 03/10/2022 ===============================
         IF (ik == nks1) THEN
-        WRITE(iunout, '(5x, a)') 'Matrix elements of dipole vector D(k) = <psi(k,j)||p|psi(k,i)>'
+        WRITE(iunout, '(5x, a)') 'Matrix elements of dipole vector Dij(k) = <psi(k,j)||p|psi(k,i)>'
         WRITE(iunout, '(5x, a)') 'nbnd   ndnd_occ   nks'
         WRITE(iunout, '(5x,3i5)') nbnd, nbnd_occ, nks2-nks1+1
         WRITE(iunout, '(5x, a)') 'ikx   iky   ikz   weight of k'
@@ -171,15 +152,15 @@ SUBROUTINE write_p_avg(filp, spin_component, firstk, lastk)
         WRITE(iunout, '(5x, a)') REPEAT('-', 78)
         ENDIF
         !
-        WRITE(iunout, '(5x,4f10.6)') xk(1,ik),xk(2,ik),xk(3,ik), wk(ik)
+        WRITE(iunout, '(4f16.8)') xk(1,ik),xk(2,ik),xk(3,ik), wk(ik)
         !
         DO ibnd = 1, nbnd
            DO jbnd = 1, nbnd
-              WRITE(iunout, '(2i6,2f11.4,6e20.10)') ibnd,jbnd,&
+              WRITE(iunout, '(2i6,2f16.8,6e20.10)') ibnd,jbnd,&
                  rytoev*et(ibnd,ik),rytoev*et(jbnd,ik),&
-                 REAL(matp(ibnd,jbnd,1)),AIMAG(matp(ibnd,jbnd,1)),&
-                 REAL(matp(ibnd,jbnd,2)),AIMAG(matp(ibnd,jbnd,2)),&
-                 REAL(matp(ibnd,jbnd,3)),AIMAG(matp(ibnd,jbnd,3))
+                 REAL(matp(jbnd,ibnd,1)),AIMAG(matp(jbnd,ibnd,1)),&
+                 REAL(matp(jbnd,ibnd,2)),AIMAG(matp(jbnd,ibnd,2)),&
+                 REAL(matp(jbnd,ibnd,3)),AIMAG(matp(jbnd,ibnd,3))
 !===========================================================================
            ENDDO
         ENDDO
@@ -189,7 +170,7 @@ SUBROUTINE write_p_avg(filp, spin_component, firstk, lastk)
   IF (ionode) THEN
      CLOSE(iunout)
   ENDIF
-
+  call deallocate_bec_type(becp)
   DEALLOCATE(matp)
   !
   RETURN

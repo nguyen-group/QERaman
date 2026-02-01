@@ -10,9 +10,9 @@
   USE  raman_mod, ONLY : nks, nbnd, nspin, npol, nbnd_occ, nmode, nqs, nel, nrs, &
        gamma, gamma_raman, rs_start, rs_end, &
        k, wk, eigv, eq, raman_k, intensity_raman, rs, &
-       dvec, polvec, rtensor, rtensor_k, &
-       matele_elph, elaser, &
-       pi, im, &
+       dvec, polvec, rtensor, rtensor_k, rtensor_lpl, rtensor_llp, rtensor_pll, &
+       matele_elph, elaser, temp, efermi, &
+       kb, pi, im, &
        ry2ev, ev2ry, ev2cm, ry2cm
   !
   IMPLICIT NONE
@@ -44,13 +44,18 @@
     intensity_raman(:,:,:,:) = 0.0d0
     ALLOCATE(rs(nrs))
     rs(:) = 0.0d0
-    !ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),rtensorb(nel,nqs,3,3),matele_ramanb(nel,npol,npol,nqs))
-    ALLOCATE(rtensor(nel,nmode,nqs,3,3),rtensor_k(nel,nmode,nks,nqs,3,3),&
-       &rtensor_interv(nel,nmode,nqs,3,3),rtensor_interv_k(nel,nmode,nks,nqs,3,3))
+    ALLOCATE(rtensor(nel,nmode,nqs,3,3), rtensor_k(nel,nmode,nks,nqs,3,3),&
+       &rtensor_interv(nel,nmode,nqs,3,3), rtensor_interv_k(nel,nmode,nks,nqs,3,3))
+    ALLOCATE(rtensor_lpl(nel,nmode,nks,nqs,3,3))
+    ALLOCATE(rtensor_llp(nel,nmode,nks,nqs,3,3))
+    ALLOCATE(rtensor_pll(nel,nmode,nks,nqs,3,3))
     rtensor(:,:,:,:,:) = 0.0d0
     rtensor_interv(:,:,:,:,:) = 0.0d0
     rtensor_interv_k(:,:,:,:,:,:) = 0.0d0
     rtensor_k(:,:,:,:,:,:) = 0.0d0
+    rtensor_lpl(:,:,:,:,:,:) = 0.0d0
+    rtensor_llp(:,:,:,:,:,:) = 0.0d0
+    rtensor_pll(:,:,:,:,:,:) = 0.0d0
     !rtensorb(:,:,:,:) = 0.0d0
     !matele_ramanb(:,:,:,:) = 0.0d0
     !
@@ -77,9 +82,16 @@
                 END DO ! Loop for ibi
                 !DO i = 1, 3
                 !   DO j = 1, 3
-                rtensor_k(iel,imode,ik,iq,:,:) = rtensor_k(iel,imode,ik,iq,:,:) * wk(ik)
+                rtensor_lpl(iel,imode,ik,iq,:,:) = rtensor_lpl(iel,imode,ik,iq,:,:) * wk(ik)
+                rtensor_llp(iel,imode,ik,iq,:,:) = rtensor_llp(iel,imode,ik,iq,:,:) * wk(ik)
+                rtensor_pll(iel,imode,ik,iq,:,:) = rtensor_pll(iel,imode,ik,iq,:,:) * wk(ik)
+                !
+                rtensor_k(iel,imode,ik,iq,:,:) = rtensor_lpl(iel,imode,ik,iq,:,:) &
+                                                + rtensor_llp(iel,imode,ik,iq,:,:) &
+                                                + rtensor_pll(iel,imode,ik,iq,:,:)
+                !
                 rtensor(iel,imode,iq,:,:) = rtensor(iel,imode,iq,:,:) + rtensor_k(iel,imode,ik,iq,:,:)
-                !rtensorb(iel,iq,:,:) = rtensorb(iel,iq,:,:) + rtensor_k(iel,imode,ik,iq,:,:)
+                !
                 !   END DO
                 !END DO
              END DO ! Loop for ik
@@ -112,6 +124,9 @@
     !matele_raman(:,:,:,:,:) = matele_raman(:,:,:,:,:) / DBLE(nks)
     !matele_ramanb(:,:,:,:) = matele_ramanb(:,:,:,:) / DBLE(nks)
     DEALLOCATE(rtensor_k)
+    DEALLOCATE(rtensor_lpl)
+    DEALLOCATE(rtensor_llp)
+    DEALLOCATE(rtensor_pll)
     !
     DO iel = 1, nel
        DO imode = 1, nmode
@@ -187,35 +202,101 @@
   ! This subroutine construct Raman tensor
   !
   INTEGER :: iel, imode, iq, ik, ibi, ibn1, ibn2
+  REAL(DP) :: nq, fi, fn1, fn2, chi, xi, fa
   !
   INTEGER :: i, j
-  COMPLEX(DP) :: rt
+  COMPLEX(DP) :: rt_lpl, rte_lpl, rth_lpl
+  COMPLEX(DP) :: rt_llp, rte_llp, rth_llp
+  COMPLEX(DP) :: rt_pll, rte_pll, rth_pll
   !
+  ! Bose Einstein distribution for phonon and Fermi distribution for electrons
+  ! avoid numerical error at T = 0 K
+  IF (temp <= 1.0D-8) THEN
+     nq = 0.0D0
+     fi  = MERGE(1.0D0, 0.0D0, eigv(ik,ibi) < efermi)  !final state
+     fn1 = MERGE(1.0D0, 0.0D0, eigv(ik,ibn1) < efermi) !intermediate state
+     fn2 = MERGE(1.0D0, 0.0D0, eigv(ik,ibn2) < efermi) !scatterted state
+  ELSE
+     nq  = 1.0D0/(EXP(eq(imode,iq)/(kb*temp))-1.0D0)
+     fi  = 1.0D0/(EXP((eigv(ik,ibi)-efermi)/(kb*temp))+1.0D0)
+     fn1 = 1.0D0/(EXP((eigv(ik,ibn1)-efermi)/(kb*temp))+1.0D0)
+     fn2 = 1.0D0/(EXP((eigv(ik,ibn2)-efermi)/(kb*temp))+1.0D0)
+  END IF
+  ! avoid acounting error at eq = 0
+  IF (eq(imode,iq) < 1.0D-10) THEN
+     nq = 0.0D0
+  ELSE
+     nq = 1.0D0/(EXP(eq(imode,iq)/(kb*temp))-1.0D0)
+  END IF
   !
+  ! Factor for electron-phonon scattering process [PRB 90, 035443 (2014)]
+  IF (.NOT.((ibi == ibn1) .OR. (ibi == ibn2) .OR. (ibn1 == ibn2))) THEN
+     chi = SQRT(nq + 1.D0) * fi * (1.D0 - fn1) * (1.D0 - fn2)
+  ELSE
+     chi = SQRT(nq + 1.D0) * fi * (1.D0 - fn2)
+  END IF
+  ! Factor for hole-phonon scattering process [PRB 90, 035443 (2014)]
+  IF (.NOT.((ibi == ibn1) .OR. (ibi == ibn2) .OR. (ibn1 == ibn2))) THEN
+     xi = SQRT(nq + 1.D0) * fi * fn1 * (1.D0 - fn2)
+  ELSE
+     xi = 0.d0
+  END IF
+  !
+  ! Factor for Raman intensity calculation, in which Raman intensity is inversely proportional to the fourth power of the laser energy
+  ! Ref. R. Loudon (1964) The Raman effect in crystals, Advances in Physics, 13:52, 423-482, DOI: 10.1080/00018736400101051
+  fa = (elaser(iel)-eq(imode,iq))*elaser(iel)
   !
   DO i = 1, 3
      DO j = 1, 3
-        ! Product of three matrix element
-        ! [D(k,f2,i)*M_q(v,k,f1,f2)*D(k,i,f1)]
-        ! Raman intensity should proportion to 1/E_L^4 since M_opt proportion to D/E_L
-        rt = (dvec(ik,ibn2,ibi,i) / (elaser(iel)-eq(imode,iq))) &
-            * matele_elph(imode,iq,ik,ibn1,ibn2) * (dvec(ik,ibi,ibn1,j) / elaser(iel))
-        !rt = dvec(ik,ibn2,ibi,i) * matele_elph(imode,iq,ik,ibn1,ibn2) * dvec(ik,ibi,ibn1,j)
-        ! Non-resonant
-        !  rt = rt / ((eigv(ik,ibn1)-eigv(ik,ibi)) * (eigv(ik,ibn2)-eigv(ik,ibi)))
-        ! Resonant condition
-        rt = rt / ((elaser(iel)-(eigv(ik,ibn1)-eigv(ik,ibi))-im*gamma) &
-            * (elaser(iel)-(eigv(ik,ibn2)-eigv(ik,ibi))-eq(imode,iq)-im*gamma))
-        !make Raman tensor
-        rtensor_k(iel,imode,ik,iq,i,j) = rtensor_k(iel,imode,ik,iq,i,j) + rt
+        !
+        ! Product of Raman matrix element for photon absorption–phonon emission–photon creation (rpr)
+        ! Add contribution from electron process [see PRB 90, 035443 (2014)]
+        ! i*gamma means each energy transition must decay forward in time
+        rte_lpl = dvec(ik,ibi,ibn2,i) * matele_elph(imode,iq,ik,ibn2,ibn1) * dvec(ik,ibn1,ibi,j) &
+                / ((eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma+eq(imode,iq)-elaser(iel))    &
+                         * (eigv(ik,ibn1)-eigv(ik,ibi)+im*gamma-elaser(iel))*fa)
+        ! Add contribution from hole process
+        rth_lpl = dvec(ik,ibn1,ibn2,i) * matele_elph(imode,iq,ik,ibi,ibn1) * dvec(ik,ibn2,ibi,j) &
+                / ((eigv(ik,ibn2)-eigv(ik,ibn1)+im*gamma+eq(imode,iq)-elaser(iel))    &
+                         * (eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma-elaser(iel))*fa)
+        ! Total Raman tensor element for rpr process
+        rt_lpl = chi*rte_lpl + xi*rth_lpl
+        ! make Raman tensor for rpr process
+        rtensor_lpl(iel,imode,ik,iq,i,j) = rtensor_lpl(iel,imode,ik,iq,i,j) + rt_lpl
+        !
+        ! Product of Raman matrix element for photon absorption–photon emission–phonon creation (rrp)
+        ! Add contribution from electron process
+        rte_llp = matele_elph(imode,iq,ik,ibi,ibn2) * dvec(ik,ibn2,ibn1,i) * dvec(ik,ibn1,ibi,j) &
+                / ((eigv(ik,ibn1)-eigv(ik,ibi)+im*gamma-elaser(iel))          &
+                         * (eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma-eq(imode,iq))*fa)
+        ! Add contribution from hole process
+        rth_llp = matele_elph(imode,iq,ik,ibn1,ibn2) * dvec(ik,ibi,ibn1,i) * dvec(ik,ibn2,ibi,j) &
+                / ((eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma-elaser(iel))         &
+                         * (eigv(ik,ibn2)-eigv(ik,ibn1)+im*gamma-eq(imode,iq))*fa)
+        ! Total Raman tensor element for rrp process
+        rt_llp = chi*rte_llp + xi*rth_llp
+        ! make Raman tensor for rrp process
+        rtensor_llp(iel,imode,ik,iq,i,j) = rtensor_llp(iel,imode,ik,iq,i,j) + rt_llp
+        !
+        ! Product of Raman matrix element for phonon creation–photon absorption–photon emission (prr)
+        ! Add contribution from electron process
+        rte_pll = dvec(ik,ibi,ibn2,i) * dvec(ik,ibn2,ibn1,j) * matele_elph(imode,iq,ik,ibn1,ibi) &
+                / ((eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma+eq(imode,iq)-elaser(iel))          &
+                         * (eigv(ik,ibn1)-eigv(ik,ibi)+im*gamma+eq(imode,iq))*fa)
+        ! Add contribution from hole process
+        rth_pll = dvec(ik,ibn1,ibn2,i) * dvec(ik,ibi,ibn1,j) * matele_elph(imode,iq,ik,ibn2,ibi) &
+                / ((eigv(ik,ibn2)-eigv(ik,ibn1)+im*gamma+eq(imode,iq)-elaser(iel))         &
+                         * (eigv(ik,ibn2)-eigv(ik,ibi)+im*gamma+eq(imode,iq))*fa)
+        ! Total Raman tensor element for prr process
+        rt_pll = chi*rte_pll + xi*rth_pll
+        ! make Raman tensor for prr process
+        rtensor_pll(iel,imode,ik,iq,i,j) = rtensor_pll(iel,imode,ik,iq,i,j) + rt_pll
      END DO
   END DO
   !
   !           
   END SUBROUTINE raman_tensor
   !
-  !
-  !
-  END MODULE calc_raman_intensity
+END MODULE calc_raman_intensity
     
   

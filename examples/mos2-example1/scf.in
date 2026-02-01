@@ -1,0 +1,37 @@
+&CONTROL
+  calculation     = 'scf'
+  prefix          = 'mos2'
+  verbosity       = 'high'
+  tstress         = .true.
+  tprnfor         = .true.
+  outdir          = './tmp'
+  pseudo_dir      = './'
+/
+&SYSTEM
+  ibrav           = 4
+  celldm(1)       = 5.9329994115
+  celldm(3)       = 7.9627773219
+  nat             = 3
+  ntyp            = 2
+  nbnd            = 15
+  ecutwfc         = 120.0
+  occupations     = 'fixed'
+!  smearing        = 'mv'
+!  degauss         = 0.01
+  assume_isolated = '2D'
+  nosym           = .true.
+  noinv           = .true.
+/
+&ELECTRONS
+  conv_thr        = 1.0D-9
+  mixing_beta     = 0.3
+/
+ATOMIC_SPECIES
+  Mo  95.942  Mo.pz-hgh.UPF
+  S   32.065  S.pz-hgh.UPF
+ATOMIC_POSITIONS (crystal)
+  Mo  0.3333333333  0.6666666667  0.5000000000
+  S   0.6666666667  0.3333333333  0.5624768914
+  S   0.6666666667  0.3333333333  0.4375231086
+K_POINTS (automatic)
+  48  48  1  0  0  0

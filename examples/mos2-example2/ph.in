@@ -1,0 +1,12 @@
+phonons
+&inputph
+  prefix          = 'mos2'
+  outdir          = './tmp'
+  tr2_ph          = 1.0D-15
+  nmix_ph         = 20
+  alpha_mix       = 0.3
+  verbosity       = 'high'
+  fildyn          = 'mos2.dyn'
+  fildvscf        = 'dvscf'
+/
+  0.0  0.0  0.0

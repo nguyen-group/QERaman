@@ -1,0 +1,7 @@
+&BANDS
+  prefix   = 'mos2'
+  outdir   = './tmp'
+  filband  = 'mos2.bands'
+  lp       = .true.
+  filp     = 'mos2.dvec'
+/

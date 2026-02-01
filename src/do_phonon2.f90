@@ -8,30 +8,32 @@
 !-----------------------------------------------------------------------
 SUBROUTINE do_phonon2(auxdyn)
   !-----------------------------------------------------------------------
-  !! This is the main driver of the phonon code. It assumes that the 
-  !! preparatory stuff has been already done.  
+  !! This is the main driver of the phonon code. It assumes that the
+  !! preparatory stuff has been already done.
   !! When the code calls this routine it has already read input
   !! decided which irreducible representations have to be calculated
   !! and it has set the variables that decide which work this routine
   !! will do. The parallel stuff has been already setup by the calling
   !! codes. This routine makes the two loops over
   !! the q-points and the irreps and does only the calculations
-  !! that have been decided by the driver routine.  
-  !! At a generic q-point, if necessary, it recalculates the band structure 
+  !! that have been decided by the driver routine.
+  !! At a generic q-point, if necessary, it recalculates the band structure
   !! calling pwscf again. Then it can calculate the response to an atomic
-  !! displacement, the dynamical matrix at that q-point, and the 
-  !! electron-phonon interaction at that q. At q=0 it can calculate 
+  !! displacement, the dynamical matrix at that q-point, and the
+  !! electron-phonon interaction at that q. At q=0 it can calculate
   !! the linear response to an electric field perturbation and hence the
   !! dielectric constant, the Born effective charges and the polarizability
-  !! at imaginary frequencies.  
+  !! at imaginary frequencies.
   !! At q=0, from the second order response to an electric field,
   !! it can calculate also the electro-optic and the raman tensors.
   !
 
   USE disp,            ONLY : nqs
-  USE control_ph,      ONLY : epsil, trans, qplot, only_init, &
-                              only_wfc, rec_code, where_rec, reduce_io
-  USE el_phon,         ONLY : elph, elph_mat, elph_simple, elph_epa
+  USE control_flags,   ONLY : use_gpu
+  USE control_lr,      ONLY : rec_code, where_rec, reduce_io
+  USE control_ph,      ONLY : epsil, trans, qplot, only_init, only_wfc
+  USE el_phon,         ONLY : elph, elph_mat, elph_simple, elph_epa, elph_print
+  USE el_phon2,        ONLY : elph_epc
   !
   ! YAMBO >
   USE YAMBO,           ONLY : elph_yambo
@@ -43,15 +45,18 @@ SUBROUTINE do_phonon2(auxdyn)
   ! FIXME: see below setup_pw
   USE noncollin_module, ONLY : noncolin, domag
   USE ahc,            ONLY : elph_ahc, elph_do_ahc
-  USE el_phon2,       ONLY : elph_epc
   USE io_files,       ONLY : iunwfc
   USE buffers,        ONLY : close_buffer
-
+  USE control_flags,  ONLY : use_gpu
+  USE environment,   ONLY : print_cuda_info
+  USE control_lr,     ONLY : lmultipole
+  
   IMPLICIT NONE
   !
   CHARACTER (LEN=256), INTENT(IN) :: auxdyn
   INTEGER :: iq, qind
   LOGICAL :: do_band, do_iq, setup_pw
+  LOGICAL,EXTERNAL :: check_gpu_support
   !
   qind = 0
   !
@@ -71,16 +76,19 @@ SUBROUTINE do_phonon2(auxdyn)
      ! should be correctly set by prepare_q: here we force it 
      ! to be .true. in order for the code to work properly in 
      ! the case SO-MAG).
-     !
+     ! 
+     use_gpu = check_gpu_support()
      setup_pw=setup_pw .OR. (noncolin .AND. domag)
      IF (setup_pw) THEN
         IF (reduce_io .AND. (qind == 1)) THEN
            CALL close_buffer( iunwfc, 'DELETE' )
         ENDIF
         CALL run_nscf(do_band, iq)
+     ELSE 
+        CALL print_cuda_info(check_use_gpu=.true.) 
      ENDIF
      !
-     !  If only_wfc=.TRUE. the code computes only the wavefunctions 
+     !  If only_wfc=.TRUE. the code computes only the wavefunctions
      !
      IF (only_wfc) THEN
         where_rec='only_wfc'
@@ -97,7 +105,7 @@ SUBROUTINE do_phonon2(auxdyn)
      !
      IF (epsil) CALL phescf()
      !
-     !  IF only_init is .true. the code computes only the 
+     !  IF only_init is .true. the code computes only the
      !  initialization parts.
      !
      IF (only_init) THEN
@@ -111,7 +119,8 @@ SUBROUTINE do_phonon2(auxdyn)
      IF ( trans ) THEN
         !
         CALL phqscf()
-        CALL dynmatrix_new(iq)
+        IF (lmultipole) CALL write_drhoun()
+        IF (.NOT. lmultipole) CALL dynmatrix_new(iq)
         !
      END IF
      !
@@ -148,10 +157,11 @@ SUBROUTINE do_phonon2(auxdyn)
            CALL elph_scdft()
         ELSEIF( elph_ahc ) THEN
            CALL elph_do_ahc()
+        ELSEIF( elph_print ) THEN
+           CALL elph_prt()
         ELSEIF( elph_epc ) THEN
-!           CALL elphsum2()
-           CALL elphfil_epc(iq)
-        ELSE 
+           CALL elph_prt_epc(iq)
+        ELSE
            CALL elphsum()
         END IF
         !

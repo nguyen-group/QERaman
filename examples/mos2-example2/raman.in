@@ -1,0 +1,23 @@
+&inputraman
+  prefix           = 'mos2'
+  outdir           = './'
+  fil_dvec         = './mos2.dvec'
+  fil_elph         = './mos2.elph'
+  sorb             = .false.
+  circular_pol     = .true.
+  nonpol           = .true.
+  plot_matele_opt  = .false.
+  plot_matele_elph = .false.
+  plot_raman_k     = .false.
+  gamma            = 0.5
+  gamma_raman      = 0.0002
+  temp             = 300.0
+  efermi           = -5.3712
+  rs_start         = 350.0
+  rs_end           = 450.0
+  nrs              = 400
+  elaser1          = 1.95
+  elaser2          = 2.33
+  elaser3          = 2.54
+  elaser4          = 2.78
+/

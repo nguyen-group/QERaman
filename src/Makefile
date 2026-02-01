@@ -22,7 +22,7 @@ RAOBJS = io_raman.o raman_mod.o knum.o raman_read.o raman_output.o calc_raman_in
 #RAMODS = io_raman.mod raman_mod.mod raman_read.mod raman_output.mod calc_raman_intensity.mod
 
 all : ph_mat.x bands_mat.x raman.x
-#all : raman.x
+#all : bands_mat.x
 
 ph_mat.x : phonon2.o $(PHOBJS) $(PWOBJS) $(LRMODS) $(QEMODS)
 	$(LD) $(LDFLAGS) -o $@ phonon2.o $(PHOBJS) \

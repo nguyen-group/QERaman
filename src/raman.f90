@@ -29,7 +29,7 @@
   WRITE(stdout,'(a)')"  RR      RR AA           AA MM     MM     MM  AA           AA NN      NNN  "
   WRITE(stdout,'(a)')"  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  "
   WRITE(stdout,'(a)')"                                                                            "
-  WRITE(stdout,'(5x,"Welcome to the Raman program: QERaman")') 
+  WRITE(stdout,'(5x,"Welcome to the Raman program: QERaman version 1.2")') 
   WRITE(stdout,'(5x,"Please cite our paper at https://doi.org/10.1016/j.cpc.2023.108967")')
   WRITE(stdout,'(/5x,a)') repeat('=',67)
   !

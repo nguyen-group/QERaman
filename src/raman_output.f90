@@ -8,8 +8,8 @@
   USE raman_mod, ONLY : outdir, sorb, circular_pol, nonpol, plot_matele_opt, plot_matele_elph, plot_raman_k, &
        nks, nbnd, nqs, nmode, nrs, nel, npol, nbnd_occ, &
        k, q, wk, wq, eigv, eq, rs, elaser, raman_k, intensity_raman, &
-       dvec,matele_opt, matele_elph, polvec, &
-       pi, &
+       dvec, matele_opt, matele_elph, polvec, &
+       pi, temp, efermi, &
        ev2cm, ry2cm, ry2ev
   !
   IMPLICIT NONE
@@ -29,6 +29,8 @@
   WRITE(stdout, '(5x,"Number of valence bands",I6)') nbnd_occ
   !WRITE(stdout, '(5x,"Number of G vectors",I6)') ngs
   WRITE(stdout, '(5x,"Number of phonon mode",I6)') nmode
+  WRITE(stdout, '(5x,"Temperature (K)",F8.2)') temp
+  WRITE(stdout, '(5x,"Fermi energy (eV)",F8.4)') efermi
   WRITE(stdout, '(1x)')
   !
   !WRITE(stdout, '(5x,"Lattice constant alat = ",f8.4,3x,"(au)")') alat
