@@ -30,7 +30,7 @@
   !WRITE(stdout, '(5x,"Number of G vectors",I6)') ngs
   WRITE(stdout, '(5x,"Number of phonon mode",I6)') nmode
   WRITE(stdout, '(5x,"Temperature (K)",F8.2)') temp
-  WRITE(stdout, '(5x,"Fermi energy (eV)",F8.4)') efermi
+  WRITE(stdout, '(5x,"Fermi energy (Ry)",F8.4)') efermi
   WRITE(stdout, '(1x)')
   !
   !WRITE(stdout, '(5x,"Lattice constant alat = ",f8.4,3x,"(au)")') alat
